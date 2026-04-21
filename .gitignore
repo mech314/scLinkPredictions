@@ -1,6 +1,8 @@
-knockout_dge.csv
 *.db
-scGPT_integration/logs/
 *.txt
 *.csv
 *.tsv
+*.log
+*.pt
+*.pkl
+*.json
