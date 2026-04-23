@@ -41,8 +41,8 @@ def get_args():
     parser.add_argument('--model', type=str, required=True, help='trained pykeen model in .pkl format')
     parser.add_argument('--output', type=str, required=True, help='output file, tsv')
     parser.add_argument('--progress_bar', dest='progress_bar', action='store_true',default=False, help='show progress bar')
-    # param for threads, default is 1
-    parser.add_argument('--threads', type=int, default=1, help='number of threads to use')
+    parser.add_argument('--threads', type=int, default=4, help='number of threads to use')
+    parser.add_argument('--device', type=str, default='cpu', help='Device to use')
     args = parser.parse_args()
     return args
 
@@ -258,7 +258,7 @@ def main():
     # Load the pretrained model
     model = torch.load(
         args.model,
-        map_location=torch.device("cpu"),
+        map_location=torch.device(args.device),
         weights_only=False,
     )
     torch.set_num_threads(args.threads)
