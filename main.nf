@@ -62,19 +62,21 @@ process HPO {
     publishDir "${params.pykeenOut}/${params.study_name}", mode: 'copy'
 
     input:
-    path splits
+    val baseline_splits
+    val augmented_splits
 
     output: 
     path "PyKeenOut/${params.study_name}/**", emit: hpo_out
 
     script:
     """
+    mkdir -p logs
     CUDA_VISIBLE_DEVICES=${params.device} \
     python ${projectDir}/src/optimize_and_train_model.py \
-        --model ${params.model} --id ${params.study_name} \
-        --test ${params.splits_dir}/test.txt \
-        --train ${params.splits_dir}/train.txt \
-        --valid ${params.splits_dir}/valid.txt > logs/${params.study_name}.log 2>&1
+        --model ${params.model} --id ${params.graph} \
+        --test ${params.baselineSplitsDir}/test.txt \
+        --train ${params.baselineSplitsDir}/train.txt \
+        --valid ${params.baselineSplitsDir}/valid.txt > logs/${params.study_name}.log 2>&1
     """
 }
 
@@ -82,6 +84,9 @@ workflow {
     FILTER_MONARCH()
     MAKE_BASELINE_SPLITS(FILTER_MONARCH.out.filtered_kg)
     MAKE_AUGMENTED_SPLITS(MAKE_BASELINE_SPLITS.out.baseline_out.collect())
-    //HPO()
+    HPO(
+        MAKE_BASELINE_SPLITS.out.baseline_out,
+        MAKE_AUGMENTED_SPLITS.out.augmented_out
+    )
 
 }

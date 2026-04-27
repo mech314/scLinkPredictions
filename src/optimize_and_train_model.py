@@ -41,8 +41,8 @@ study_name = "{model}_{job_id}".format(model=args.model, job_id=job_id)  # Uniqu
 storage_name = "sqlite:///{}.db".format(study_name) # this for a sqlite database in the current working directory
 
 hpo_pipeline_result = hpo_pipeline(
-    n_trials=30,
-    # n_trials=4,
+    #n_trials=30,
+    n_trials=1,
     # sampler=RandomSampler, # this was the original one I used, commenting out to try something new
     sampler=QMCSampler,
 
@@ -102,7 +102,7 @@ hpo_pipeline_result.save_to_directory('PyKeenOut/{}'.format(study_name))
 
 print('HPO pipeline result saved to PyKeenOut/{}'.format(study_name))
 print('Training best model')
-config = 'out/PyKeenOut/{}/best_pipeline/pipeline_config.json'.format(study_name)
+config = os.path.join('PyKeenOut', study_name, 'best_pipeline', 'pipeline_config.json')
 # train best model
 pipeline_result = pipeline_from_path(config,device='cuda')
 pipeline_result.save_to_directory('PyKeenOut/{}/'.format(study_name))
