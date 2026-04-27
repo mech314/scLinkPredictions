@@ -8,3 +8,5 @@
 *.json
 *.gz
 *.pth
+work/
+*.nextflow.log*

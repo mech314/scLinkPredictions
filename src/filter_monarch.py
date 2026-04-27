@@ -10,7 +10,7 @@ def get_args():
 
     parser.add_argument('--input', required=True, help='Path to Monarch KG')
     parser.add_argument('--nodes', default="MONDO:,HGNC:,HP:", help='Comma separated prefixes to retain')
-    parser.add_argument('--output', required=True, help='Folder where to save filtered file')
+    parser.add_argument('--output', required=True, help='Path where to save filtered file')
 
     return parser.parse_args()
 
@@ -31,7 +31,7 @@ def main():
     print(f"Before: {len(df):,}  After: {len(df_filtered):,}")
 
     df_filtered = df_filtered[["subject", "predicate", "object"]]
-    df_filtered.to_csv(f"{args.output}/filtered_KG.txt", sep="\t", index=False, header=False)
+    df_filtered.to_csv(args.output, sep="\t", index=False, header=False)
 
 if __name__ == '__main__':
     main()

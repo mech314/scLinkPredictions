@@ -102,7 +102,7 @@ hpo_pipeline_result.save_to_directory('PyKeenOut/{}'.format(study_name))
 
 print('HPO pipeline result saved to PyKeenOut/{}'.format(study_name))
 print('Training best model')
-config = 'PyKeenOut/{}/best_pipeline/pipeline_config.json'.format(study_name)
+config = 'out/PyKeenOut/{}/best_pipeline/pipeline_config.json'.format(study_name)
 # train best model
 pipeline_result = pipeline_from_path(config,device='cuda')
 pipeline_result.save_to_directory('PyKeenOut/{}/'.format(study_name))

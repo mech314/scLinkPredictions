@@ -1,23 +1,28 @@
 #!/bin/bash
 
-seeds=(42 314 123 678 9484)
+REPO_DIR=$(dirname $(dirname $(readlink -f $0)))
+
 SIM_FOLDER=$1
-FILTERED_KG=$2
+INPUT=$2
+SEEDS=$(echo $3 | tr ',' ' ')
+OUTDIR=$4
+SPLIT=$5
 
-SPLIT_FOLDER="out/KG_split"
-
-if [[ ! -d ${SPLIT_FOLDER} ]]; then
-    mkdir -p ${SPLIT_FOLDER}
-fi
-
-
-for f in ${SIM_FOLDER}/*.csv; do
-    fname=$(basename ${f} .csv) 
-    for seed in "${seeds[@]}"; do
-        python src/make_splits.py \
-        --filtered_kg ${FILTERED_KG} \
-        --sim_csv ${f} \
-        --output_dir ${SPLIT_FOLDER}/${fname}/split_seed${seed} \
-        --seed ${seed}
+if [[ "${SPLIT}" == "baseline" ]]; then
+    for seed in ${SEEDS}; do
+        python ${REPO_DIR}/src/make_baseline_splits.py \
+            --filtered_kg ${INPUT} \
+            --output_dir ${OUTDIR}/split_seed${seed} \
+            --seed ${seed}
     done
-done
+else
+    for f in ${SIM_FOLDER}/*.csv; do
+        fname=$(basename ${f} .csv)
+        for seed in ${SEEDS}; do
+            python ${REPO_DIR}/src/make_augmented_splits.py \
+                --baseline_dir ${INPUT}/split_seed${seed} \
+                --sim_csv ${f} \
+                --output_dir ${OUTDIR}/${fname}/split_seed${seed}
+        done
+    done
+fi

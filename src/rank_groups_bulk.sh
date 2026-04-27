@@ -41,6 +41,7 @@ for split_dir in ${SPLITS_DIR}/*/; do
             --test_triples ${test} \
             --model ${model} \
             --output ${output} \
-            --device cuda:1
+            --device cpu \
+            --threads 4
     done
 done
