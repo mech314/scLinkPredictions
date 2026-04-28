@@ -21,6 +21,7 @@ def get_args():
     parser.add_argument('--train', type=str, help='path to train edges')
     parser.add_argument('--valid', type=str, help='path to valid edges')
     parser.add_argument('--model', type=str, help='model name, rotate, transe, complex etc. Name must be a model in pykeen')
+    parser.add_argument('--out_dir', type=str, default='.', help='output directory')
     return parser.parse_args()
 
 
@@ -98,11 +99,12 @@ hpo_pipeline_result = hpo_pipeline(
     loss="NSSA",
 )
 
-hpo_pipeline_result.save_to_directory('PyKeenOut/{}'.format(study_name))
+out_dir = study_name
+os.makedirs(out_dir, exist_ok=True)
 
-print('HPO pipeline result saved to PyKeenOut/{}'.format(study_name))
-print('Training best model')
-config = os.path.join('PyKeenOut', study_name, 'best_pipeline', 'pipeline_config.json')
+hpo_pipeline_result.save_to_directory(args.out_dir)
+
+#config = os.path.join(out_dir, 'hpo_results', 'best_pipeline', 'pipeline_config.json')
 # train best model
-pipeline_result = pipeline_from_path(config,device='cuda')
-pipeline_result.save_to_directory('PyKeenOut/{}/'.format(study_name))
+# pipeline_result = pipeline_from_path(config,device='cuda')
+# pipeline_result.save_to_directory('PyKeenOut/{}/'.format(study_name))

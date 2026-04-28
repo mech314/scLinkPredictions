@@ -66,7 +66,7 @@ process HPO {
     val augmented_splits
 
     output: 
-    path "PyKeenOut/${params.study_name}/**", emit: hpo_out
+    path "*/**", emit: hpo_out
 
     script:
     """

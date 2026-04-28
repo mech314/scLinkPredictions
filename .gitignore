@@ -10,3 +10,4 @@
 *.pth
 work/
 *.nextflow.log*
+.nextflow/
