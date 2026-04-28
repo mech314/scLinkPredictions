@@ -66,7 +66,8 @@ process HPO {
     val augmented_splits
 
     output: 
-    path "*/**", emit: hpo_out
+    path "best_pipeline", emit: hpo_out
+    path "logs", emit: hpo_logs
 
     script:
     """
@@ -80,6 +81,27 @@ process HPO {
     """
 }
 
+process TRAIN_MODELS {
+    publishDir "${params.pykeenOut}/${params.study_name}", mode: 'copy'
+
+    input:
+    val hpo_out
+
+    output:
+    path "*/**", emit: train_out
+
+    script:
+    """
+    bash ${projectDir}/src/train_similarities.sh \
+        ${params.augmentedSplitOut} \
+        ${params.pykeenOut}/${params.study_name}/best_pipeline/pipeline_config.json \
+        . \
+        cuda:${params.device} \
+        ${params.model}
+    """
+
+}
+
 workflow { 
     FILTER_MONARCH()
     MAKE_BASELINE_SPLITS(FILTER_MONARCH.out.filtered_kg)
@@ -88,5 +110,6 @@ workflow {
         MAKE_BASELINE_SPLITS.out.baseline_out,
         MAKE_AUGMENTED_SPLITS.out.augmented_out
     )
+    TRAIN_MODELS(HPO.out.hpo_out.collect())
 
 }
