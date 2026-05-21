@@ -8,6 +8,10 @@
 *.json
 *.gz
 *.pth
-work/
+*.nextflow
+work*/
 *.nextflow.log*
 .nextflow/
+*.zip
+*.npy
+*.h5ad
